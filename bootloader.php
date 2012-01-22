@@ -25,6 +25,19 @@ ClassLoader::initialize($load_paths);
 // The base url
 define('URL', Util::getRootDirectory());
 
+/**
+ * If no resource base is configured (e.g. a url to a CDN), 
+ * the resource folder is the the "app/static" folder by convention.
+ */
+if (!defined('RESOURCE_BASE'))
+{
+	define('RESOURCE_BASE', URL . '/app/static');
+}
+
+/**
+ * Start a session with the name of the URL.
+ * Just to make sure we don't collide with other stuff.
+ */
 session_name(URL);
 session_start();
 
