@@ -16,6 +16,7 @@ define('MODELS', 		APP . 'models' . DS);
 define('CONTROLLERS', 	APP . 'controllers' . DS);
 define('TEMPORARY', 	APP . 'tmp' . DS );
 define('MAIL_TEMPLATES', TEMPLATES . 'emails' . DS);
+define('MIGRATIONS', APP . 'migrations' . DS);
 
 require(CLASSES . 'ClassLoader.class.php');
 
