@@ -22,8 +22,13 @@ require(CLASSES . 'ClassLoader.class.php');
 $load_paths = array(CLASSES, MODELS, CONTROLLERS, CLASSES . 'smarty' . DS);
 ClassLoader::initialize($load_paths);
 
-// The base url
-define('URL', Util::getRootDirectory());
+/**
+ * If not URL is defined, make a guess.
+ */
+if (!defined('URL'))
+{
+	define('URL', Util::getRootDirectory());
+}
 
 /**
  * If no resource base is configured (e.g. a url to a CDN), 
@@ -31,7 +36,7 @@ define('URL', Util::getRootDirectory());
  */
 if (!defined('RESOURCE_BASE'))
 {
-	define('RESOURCE_BASE', URL . '/app/static');
+	define('RESOURCE_BASE', Link::base(''));
 }
 
 /**
@@ -42,9 +47,14 @@ session_name(URL);
 session_start();
 
 /**
- * Use output compression using the Zlib library.
+ * Use output compression using the Zlib library - if supported 
+ * by the browser.
  */
-ini_set('zlib.output_compression', 1);
+if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
+{
+	ini_set('zlib.output_compression', 1);
+	header('Content-Encoding: gzip');
+}
 
 /** 
  * Turn on output buffering.
