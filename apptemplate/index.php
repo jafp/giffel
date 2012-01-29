@@ -3,8 +3,8 @@
 define('DS', DIRECTORY_SEPARATOR);
 
 define('SITE', dirname(__FILE__) . DS );
-define('FRAMEWORK', SITE . '../framework' . DS);
-define('APP', SITE . 'app' . DS);
+define('FRAMEWORK', SITE . '..' . DS);
+define('APP', SITE);
 
 require SITE . 'config.php';
 require FRAMEWORK . 'bootloader.php';
