@@ -29,7 +29,7 @@ class Bootloader
 		{
 			while (($e = $dir->read()) != null)
 			{
-				if ($e != '.' && $e != '..')
+				if ($e != '.' && $e != '..' && $e != '.gitignore')
 				{
 					$p = $path . $e . DS;
 					if (is_dir($p))
