@@ -9,6 +9,7 @@ abstract class BaseController
 {
 	public static $roles = array();
 	public static $is_debug_only = false;
+	public static $use_cache = false;
 	public static $urls = array();
 
 	public $smarty;

@@ -61,12 +61,6 @@ class Bootloader
 		{
 			$query = $_GET[Bootloader::QUERY]; 
 		}
-		
-		if (Util::useCache() and Cache::hasCached($query))
-		{
-			Cache::outputCached($query);
-			return;
-		}
 
 		$mapping = null;
 		$url_data = null;
@@ -87,6 +81,16 @@ class Bootloader
 		if ($mapping != null)
 		{
 			$controller = $this->getController($mapping[1]);
+
+			/**
+			 * Output cache if the controller allows it, and caching
+			 * is globally activated.
+			 */
+			if ($controller::$use_cache && Util::useCache() && Cache::hasCached($query))
+			{
+				Cache::outputCached($query);
+				return;
+			}
 			
 			$controller->initialize();
 			
@@ -120,15 +124,15 @@ class Bootloader
 			{
 				// Why?
 			}
+
+			if (Util::useCache() && $controller::$use_cache)
+			{	
+				Cache::cacheOutput($query, ob_get_contents());
+			}	
 		}
 		else
 		{
 			$this->render404();
-		}
-
-		if (Util::useCache())
-		{	
-			Cache::cacheOutput($query, ob_get_contents());
 		}
 	}
 	
