@@ -149,7 +149,7 @@ abstract class BaseController
 		// merge with default parameters
 		$parms = array_merge( array('class' => '', 'style' => '', 'title' => ''), $parms);
 		
-		return "<img src='" . Link::base($parms['src']) . "' style='".$parms['style']."' class='".$parms['class']."' title='".$parms['title']."'/>";
+		return "<img src='" . Link::base($parms['src']) . "' style='".$parms['style']."' class='".$parms['class']."' title='".$parms['title']."' alt='".$parms['title']."'/>";
 	}
 	
 	static function smarty_function_plugin_breadcrumps($parms, $tpl)

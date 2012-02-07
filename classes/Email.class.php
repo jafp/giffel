@@ -1,7 +1,7 @@
 <?php
 
 // Amazon Simple Email Service Client
-require_once CLASSES_PATH . 'aws-ses/ses.php';
+require_once CLASSES . 'aws-ses/ses.php';
 
 class Email
 {	
@@ -24,7 +24,7 @@ class Email
 	public static function getContent($template, $values)
 	{
 		// load template file
-		$body = file_get_contents(MAIL_TEMPLATES_PATH . $template . '.html');
+		$body = file_get_contents(MAIL_TEMPLATES . $template . '.html');
 		$body = str_replace('\\','',$body);
 		
 		// substitute values
