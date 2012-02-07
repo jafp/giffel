@@ -14,6 +14,11 @@ class Util
 		return ( defined('DEBUG') && DEBUG == true);
 	}
 
+	public static function useCache()
+	{
+		return ( defined('USE_CACHE') && USE_CACHE == true );
+	}
+
 	public static function getDb()
 	{
 		if (self::$db == null)

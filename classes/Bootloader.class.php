@@ -62,6 +62,12 @@ class Bootloader
 			$query = $_GET[Bootloader::QUERY]; 
 		}
 		
+		if (Util::useCache() and Cache::hasCached($query))
+		{
+			Cache::outputCached($query);
+			return;
+		}
+
 		$mapping = null;
 		$url_data = null;
 		
@@ -118,6 +124,11 @@ class Bootloader
 		else
 		{
 			$this->render404();
+		}
+
+		if (Util::useCache())
+		{	
+			Cache::cacheOutput($query, ob_get_contents());
 		}
 	}
 	
