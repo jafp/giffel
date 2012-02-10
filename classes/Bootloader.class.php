@@ -1,19 +1,40 @@
 <?php
 
 /** 
- * Copyright 2011 by Jacob Pedersen <jacob@zafri.dk>
+ * Copyright 2011-12 by Jacob Pedersen <jacob@zafri.dk>
  * All rights reserved.
 **/
 
+/**
+ * Bootloader.
+ */
 class Bootloader
 {
 	const QUERY = 'q';
 	
+	/**
+	 * The current url.
+	 */
 	private $_url = null;
+
+	/**
+	 * Mapped controllers by url pattern.
+	 */
 	private $_mappings = null;
+
+	/**
+	 * Indicated if something has been rendered.
+	 */
 	private $_has_rendered = false;
+
+	/**
+	 * Array of the HTTP GET data.
+	 */
 	private $_get_data = null;
 	
+	/**
+	 * Constructor. Indexes all controllers.
+	 */
 	public function __construct()
 	{	
 		$this->_mappings = array();
@@ -22,6 +43,11 @@ class Bootloader
 		$this->indexControllers(CONTROLLERS);
 	}
 	
+	/**
+	 * Recursive indexing of controllers in the given folder.
+	 * 
+	 * @param path Path to folder with controller implementations.
+	 */
 	private function indexControllers($path)
 	{
 		$dir = dir($path);
@@ -54,6 +80,9 @@ class Bootloader
 		}
 	}
 	
+	/**
+	 * Handles the current request, and renders the output.
+	 */
 	public function handleRequest()
 	{	
 		$query = INDEX;	
@@ -136,12 +165,21 @@ class Bootloader
 		}
 	}
 	
+	/**
+	 * Render a 404 message page.
+	 */
 	public function render404()
 	{
 		$c = new ControllerImpl();
 		$this->renderSmarty($c, TEMPLATES . '404.tpl');
 	}
 	
+	/**
+	 * Render the given template.
+	 *
+	 * @param controller The controller that handles this request
+	 * @param template The name of the template
+	 */
 	private function renderSmarty($controller, $template)
 	{
 		try
@@ -155,12 +193,22 @@ class Bootloader
 		}
 	}
 	
+	/**
+	 * @param name Name of the controller
+	 * @return An instance of the controller with the given name
+	 */
 	private function getController($name)
 	{
 		$clazz = ucfirst($name) . 'Controller';
 		return new $clazz;
 	}
 	
+	/**
+	 * Converts the url pattern to a regular expression.
+	 * 
+	 * @param pattern String url pattern
+	 * @return Regular expression
+	 */
 	public static function compileUrlRegex($pattern) 
 	{
 		$escaped = str_replace('/', '\/', $pattern);
