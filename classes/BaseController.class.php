@@ -125,7 +125,7 @@ abstract class BaseController
 		if (Util::hasFlash())
 		{
 			$flash = Util::getFlash();
-			return '<div class="x-info clsQuickNotice">' . $flash . '</div>';
+			return '<div class="notice">' . $flash . '</div>';
 		}
 		return '';
 	}
