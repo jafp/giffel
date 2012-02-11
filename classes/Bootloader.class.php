@@ -31,6 +31,8 @@ class Bootloader
 	 * Array of the HTTP GET data.
 	 */
 	private $_get_data = null;
+
+	//private $_classes_and_urls = array();
 	
 	/**
 	 * Constructor. Indexes all controllers.
@@ -41,6 +43,34 @@ class Bootloader
 		$this->debugging = (defined('DEBUG') && DEBUG == true);
 		
 		$this->indexControllers(CONTROLLERS);
+		
+		//$this->cacheMappings();
+	}
+
+	/**
+	 * Stores the mappings in text file with
+	 * urls already compiled  as regular expressions.
+	 * The form is like:
+	 *
+	 *	[controllerName]
+	 *	link_to_something/foo/bar /^\/*link_to_something\/foo\/bar\/*$/ $s foo_bar_action
+	 *	...
+	 *	... 
+	 *
+	 */
+	private function cacheMappings()
+	{
+		$f = fopen(TEMPORARY . 'mappings.txt', 'w');
+
+		foreach ($this->_classes_and_urls as $clazz => $urls)
+		{
+			fputs($f, '[' . $clazz . ']\n');
+			foreach ($urls as $u)
+			{
+				fprintf($f, '%s %s $s\n', $u[0], self::compileUrlRegex($u[0]), $u[2]);
+			}
+		}
+		fclose($f);
 	}
 	
 	/**
@@ -73,6 +103,8 @@ class Bootloader
 							{
 								$this->_mappings[$url[0]] = $url;
 							}
+
+							//$this->_classes_and_urls[$clazz] = $urls;
 						}
 					}
 				}
