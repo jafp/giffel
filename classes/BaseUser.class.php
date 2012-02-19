@@ -89,6 +89,11 @@ class BaseUser extends DbObject
 	{
 		$_SESSION['user_id'] = $this->id;
 	}
+
+	public static function dropSession()
+	{
+		unset($_SESSION['user_id']);
+	}
 }
 
 
