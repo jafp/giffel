@@ -80,6 +80,7 @@ class Bootloader
 	 */
 	private function indexControllers($path)
 	{
+		$default = null;
 		$dir = dir($path);
 		if ($dir != null)
 		{
@@ -101,7 +102,14 @@ class Bootloader
 							$urls = $clazz::$urls;
 							foreach ($urls as $url)
 							{
-								$this->_mappings[$url[0]] = $url;
+								if (!isset($url['default']))
+								{
+									$this->_mappings[$url[0]] = $url;
+								}
+								else
+								{
+									$default = $url;
+								}
 							}
 
 							//$this->_classes_and_urls[$clazz] = $urls;
@@ -109,6 +117,12 @@ class Bootloader
 					}
 				}
 			}
+		}
+		// Add the default mapping to the end
+		// => lowest priority
+		if ($default != null)
+		{
+			$this->_mappings[$default[0]] = $default;
 		}
 	}
 	

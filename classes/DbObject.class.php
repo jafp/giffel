@@ -16,6 +16,7 @@ abstract class DbObject {
 	
 	public static function getRelations() {}
 	public static function getOrderBy() { return ''; }
+	protected function beforeSave() {}
 	//public function validate() { return array(); }
 
 	private $_db;
