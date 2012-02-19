@@ -7,6 +7,8 @@
 
 abstract class BaseController
 {
+	public static $current = null;
+
 	public static $roles = array();
 	public static $is_debug_only = false;
 	public static $use_cache = false;
@@ -14,12 +16,14 @@ abstract class BaseController
 
 	public $smarty;
 	public $template;
+	public $request_obj;
 
 	public function initialize() {}	
 	public function before() {}
 	
 	public function __construct()
 	{
+		self::$current = $this;
 		$this->smarty = new Smarty();
 	
 		if (Util::isDebug())
@@ -45,6 +49,7 @@ abstract class BaseController
 	
 	public function handle($action, Request $data)
 	{		
+		$this->request_obj = $data;
 		$retval = $this->before();
 		
 		if (method_exists($this, $action))
