@@ -44,9 +44,11 @@ if (!defined('RESOURCE_BASE'))
  * Start a session with the name of the URL.
  * Just to make sure we don't collide with other stuff.
  */
-session_name(URL);
+session_name(URL);	
 session_start();
 
+if (!defined('SKIP_GZIP'))
+{
 /**
  * Use output compression using the Zlib library - if supported 
  * by the browser.
@@ -56,18 +58,33 @@ if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
 	ini_set('zlib.output_compression', 1);
 	header('Content-Encoding: gzip');
 }
+}
 
+if (!defined('SKIP_BOOTLOAD'))
+{
 /** 
  * Turn on output buffering.
  */
 ob_start();
 
+//Profiler::start('request');
+
+
 $bootloader = new Bootloader();
 $bootloader->handleRequest();
+
+//Profiler::stop('request');
+//var_dump(Profiler::$results);
+
+//if (Util::isDebug())
+//{
+//	DbObject::dumpStats();
+//}
 
 /**
  * End and flush output buffer.
  */
 ob_end_flush();
+}
 
 ?>

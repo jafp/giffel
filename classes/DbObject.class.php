@@ -29,6 +29,12 @@ abstract class DbObject {
 	private $_cached_relations;
 	private $_field_types;
 	private $_include_empty = false;
+
+	/**
+	 * Statements executed.
+	 * Simple logging utility.
+	 */
+	private static $_log_statements = array();
 	
 	public function __construct() 
 	{
@@ -58,6 +64,10 @@ abstract class DbObject {
  		$table_name = self::getTableName();
 		
 		$stmt = "SELECT SQL_NO_CACHE * FROM `{$table_name}` {$where} {$order_by} {$limit}";
+		if (Util::isDebug())
+		{
+			self::$_log_statements[] = $stmt;	
+		}
 		
 		try {
 			$stmt = Util::getDb()->prepare($stmt);
@@ -70,7 +80,8 @@ abstract class DbObject {
 				foreach ($result as $key => $value) {
 					$obj->$key = $value;
 				}
-				
+
+				$obj->_callback('afterFind');
 				$results[] = $obj;
 			}
 			
@@ -87,6 +98,12 @@ abstract class DbObject {
 		$table_name = self::getTableName();
 
 		$stmt = "SELECT SQL_NO_CACHE * FROM `{$table_name}` {$where} {$order_by} LIMIT 1";
+
+		if (Util::isDebug())
+		{
+			$backtrace = debug_backtrace();
+			self::$_log_statements[] = array($class, $backtrace[0]['function'], $where, $params, $stmt);
+		}
 		
 		try {
 			$stmt = Util::getDb()->prepare($stmt);
@@ -98,6 +115,7 @@ abstract class DbObject {
 					$obj->$key = $value;
 				}
 			
+				$obj->_callback('afterFind');
 				return $obj;
 			}
 		} catch (PDOException $e) {
@@ -111,7 +129,6 @@ abstract class DbObject {
 	}
 	
 	public function save() {
-
 		$this->_callback('beforeSave');
 		$is_new = true;
 		$res = null;
@@ -123,6 +140,11 @@ abstract class DbObject {
 			$is_new = true;
 		}
 		try {
+			if (Util::isDebug())
+			{
+				self::$_log_statements[] = $res[0];
+			}
+
 			$stmt = $this->_db->prepare($res[0]);
 			$fields = array();
 			
@@ -183,7 +205,14 @@ abstract class DbObject {
 	public function delete() {
 		if ($this->id != null) {
 			try {
-				$stmt = $this->_db->prepare("DELETE FROM `{$this->_table_name}` WHERE `id`=?");
+				$q = "DELETE FROM `{$this->_table_name}` WHERE `id`=?";
+				$stmt = $this->_db->prepare($q);
+				
+				if (Util::isDebug())
+				{
+					self::$_log_statements[] = $q;
+				}
+
 				$stmt->execute(array($this->id));
 				
 			} catch (PDOException $e) {
@@ -382,6 +411,11 @@ abstract class DbObject {
 	{
 		$class = get_called_class();
 		return (isset($class::$table_name) ? $class::$table_name : $class::$table); 
+	}
+
+	public static function dumpStats()
+	{
+		var_dump(self::$_log_statements);
 	}
 }
 

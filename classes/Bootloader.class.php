@@ -219,6 +219,18 @@ class Bootloader
 		$c = new ControllerImpl();
 		$this->renderSmarty($c, TEMPLATES . '404.tpl');
 	}
+
+	public function redirect($u)
+	{
+		$u = $u == 'INDEX' ? '' : $u;
+		header('location: ' . Link::url($u));
+	}
+
+	public static function instance()
+	{
+		global $bootloader;
+		return $bootloader;
+	}
 	
 	/**
 	 * Render the given template.
