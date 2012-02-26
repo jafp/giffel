@@ -77,7 +77,7 @@ class BaseUser extends DbObject
 	/**
 	 * @return HASH
 	 */
-	protected static function getHash($salt, $password) 
+	public static function getHash($salt, $password) 
 	{
 		return hash_hmac('md5', $password . $salt, SITE_KEY);
 	}
