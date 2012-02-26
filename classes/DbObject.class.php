@@ -91,6 +91,34 @@ abstract class DbObject {
 			die($e->getmessage());
 		}
 	}
+
+	public static function findBySQL($stmt, $params) {
+		$class = get_called_class();
+		$order_by = $class::$order_by;
+ 		$table_name = self::getTableName();
+
+ 		try {
+			$stmt = Util::getDb()->prepare($stmt);
+			$stmt->execute($params);
+			
+			$results = array();
+			
+			foreach ($stmt->fetchAll() as $result) {
+				$obj = new $class();
+				foreach ($result as $key => $value) {
+					$obj->$key = $value;
+				}
+
+				$obj->_callback('afterFind');
+				$results[] = $obj;
+			}
+			
+			return $results;
+			
+		} catch (PDOException $e) {
+			die($e->getmessage());
+		}
+	}
 	
 	public static function findOne($where = null, $params = array()) {
 		$class = get_called_class();
@@ -236,6 +264,8 @@ abstract class DbObject {
 			$result = $this->_oneToManyRelation($name, $relation);
 		} else if ($type == 'many-to-one') {
 			$result = $this->_manyToOneRelation($name, $relation);
+		} else if ($type == 'many-to-many') {
+			$result = $this->_manyToManyRelation($name, $relation);
 		}
 		
 		if ($result != null) {
@@ -256,6 +286,11 @@ abstract class DbObject {
 	
 	public function className() {
 		return "DbObject";
+	}
+
+	public function isNew()
+	{
+		return $this->id == 0;
 	}
 	
 	public function __set($name, $value) {
@@ -290,6 +325,12 @@ abstract class DbObject {
 		$key = $relation[2];
 		
 		return call_user_func("{$class}::find", "where `{$key}`=?", array($this->id));
+	}
+
+	public function _manyToManyRelation($name, $relation) {
+		list($type, $target_class, $target_table, $target_id, $rel_table, $rel_target_id, $rel_id) = $relation;
+		
+		return $target_class::findBySQL("SELECT `{$target_table}`.* FROM `{$target_table}` LEFT JOIN `{$rel_table}` ON `{$rel_table}`.`{$rel_target_id}` = `{$target_table}`.`{$target_id}` WHERE `{$rel_table}`.`{$rel_id}` = ?", array($this->id));
 	}
 	
 	private function _hasField($name) {
