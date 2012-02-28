@@ -23,6 +23,11 @@ class DateUtil
 		return date('d-m-Y', strtotime($date));
 	}
 	
+	static function toDMYHMS($date) 
+	{
+		return date('d-m-Y H:i:s', strtotime($date));
+	}
+
 	static function toFull($date)
 	{
 		
