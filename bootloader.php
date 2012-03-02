@@ -49,42 +49,42 @@ session_start();
 
 if (!defined('SKIP_GZIP'))
 {
-/**
- * Use output compression using the Zlib library - if supported 
- * by the browser.
- */
-if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-{
-	ini_set('zlib.output_compression', 1);
-	header('Content-Encoding: gzip');
-}
+	/**
+	 * Use output compression using the Zlib library - if supported 
+	 * by the browser.
+	 */
+	if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
+	{
+		ini_set('zlib.output_compression', 1);
+		header('Content-Encoding: gzip');
+	}
 }
 
 if (!defined('SKIP_BOOTLOAD'))
 {
-/** 
- * Turn on output buffering.
- */
-ob_start();
+	/** 
+	 * Turn on output buffering.
+	 */
+	ob_start();
 
-//Profiler::start('request');
+	//Profiler::start('request');
 
 
-$bootloader = new Bootloader();
-$bootloader->handleRequest();
+	$bootloader = new Bootloader();
+	$bootloader->handleRequest();
 
-//Profiler::stop('request');
-//var_dump(Profiler::$results);
+	//Profiler::stop('request');
+	//var_dump(Profiler::$results);
 
-//if (Util::isDebug())
-//{
-//	DbObject::dumpStats();
-//}
+	//if (Util::isDebug())
+	//{
+	//	DbObject::dumpStats();
+	//}
 
-/**
- * End and flush output buffer.
- */
-ob_end_flush();
+	/**
+	 * End and flush output buffer.
+	 */
+	ob_end_flush();
 }
 
 ?>
