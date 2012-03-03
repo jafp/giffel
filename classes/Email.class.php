@@ -14,7 +14,15 @@ class Email
 		$email = new SimpleEmailServiceMessage();
 		
 		$email->addTo($name . ' <' . $address . '>');
-		$email->setFrom('Hundemassor.dk <noreply@hundemassor.dk>');
+
+		if (defined('DEFAULT_FROM'))
+		{
+			$email->setFrom(DEFAULT_FROM);
+		}
+		else
+		{
+			$email->setFrom('Hundemassor.dk <noreply@hundemassor.dk>');
+		}
 		$email->setSubject($subject);
 		$email->setMessageFromString('', $html);
 
