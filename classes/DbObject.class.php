@@ -158,7 +158,7 @@ abstract class DbObject {
 	
 	public function reload()
 	{
-		$this = self::findById($id);
+		return self::findById($this->id);
 	}
 
 	public function save() {
