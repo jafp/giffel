@@ -156,6 +156,11 @@ abstract class DbObject {
 		return self::findOne("where `id`=?", array($id));
 	}
 	
+	public function reload()
+	{
+		$this = self::findById($id);
+	}
+
 	public function save() {
 		$this->_callback('beforeSave');
 		$is_new = true;

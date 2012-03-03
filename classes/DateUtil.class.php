@@ -30,7 +30,7 @@ class DateUtil
 
 	static function toFull($date)
 	{
-		
+			
 	}
 }
 
