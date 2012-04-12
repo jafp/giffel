@@ -44,7 +44,13 @@ if (!defined('RESOURCE_BASE'))
  * Start a session with the name of the URL.
  * Just to make sure we don't collide with other stuff.
  */
-session_name(URL);	
+
+if (!defined('SESSION_KEY'))
+{
+	define('SESSION_KEY', URL);
+}
+
+session_destroy();
 session_start();
 
 if (!defined('SKIP_GZIP'))
