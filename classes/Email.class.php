@@ -1,5 +1,10 @@
 <?php
 
+/** 
+ * Copyright 2011 by Jacob Pedersen <jacob@zafri.dk>
+ * All rights reserved.
+**/
+
 // Amazon Simple Email Service Client
 require_once CLASSES . 'aws-ses/ses.php';
 
@@ -19,10 +24,7 @@ class Email
 		{
 			$email->setFrom(DEFAULT_FROM);
 		}
-		else
-		{
-			$email->setFrom('Hundemassor.dk <noreply@hundemassor.dk>');
-		}
+		
 		$email->setSubject($subject);
 		$email->setMessageFromString('', $html);
 
